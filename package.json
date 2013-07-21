@@ -1,0 +1,38 @@
+{
+  "name": "bacontrap",
+  "version": "0.1.0",
+  "author": {
+    "name": "Ville Lautanala",
+    "email": "lautis@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lautis/bacontrap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lautis/bacontrap/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/lautis/bacontrap/blob/master/LICENSE.txt"
+    }
+  ],
+  "description": "Keyboard shortcuts wrapped in Bacon",
+  "dependencies": {},
+  "devDependencies": {
+    "bower": "0.10.0",
+    "chai": "~1.7.2",
+    "coffee-script": "~1.6.3",
+    "coffeeify": "0.4.1",
+    "grunt": "~0.4.0",
+    "grunt-bower-task": "git://github.com/yatskevich/grunt-bower-task.git",
+    "grunt-browserify": "1.2.0",
+    "grunt-cli": "0.1.9",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-watch": "~0.5.1",
+    "grunt-mocha": "~0.3.4",
+    "mocha": "~1.12.0",
+    "phantomjs": "git://github.com/Obvious/phantomjs.git"
+  }
+}
