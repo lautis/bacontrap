@@ -2,10 +2,12 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-bower-task'
   grunt.loadNpmTasks 'grunt-browserify'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-mocha'
 
   grunt.registerTask 'default', ['browserify', 'mocha']
+  grunt.registerTask 'dist', ['coffee', 'uglify']
 
   grunt.initConfig
     bower:
@@ -25,6 +27,12 @@ module.exports = (grunt) ->
       index: ['test/index.html']
       options:
         run: true
+    uglify:
+      main:
+        files:
+          'bacontrap.min.js': ['bacontrap.js']
+        options:
+          mangle: true
     watch:
       watch:
         files: ['src/**/*.coffee', 'test/**/*.coffee'],
