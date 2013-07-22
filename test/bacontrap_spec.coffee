@@ -1,6 +1,7 @@
 Bacontrap = require '../src/bacontrap.coffee'
 window.Bacontrap = Bacontrap
 {expect} = require 'chai'
+sinon = require 'sinon'
 
 describe "Bacontrap", ->
   describe '.match', ->
@@ -36,81 +37,77 @@ describe "Bacontrap", ->
       @bus = new Bacon.Bus()
 
     it 'binds to keyboard shortcut', ->
-      trapped = null
-      Bacontrap.trap(@bus, ['ctrl+num']).take(1)
-        .onValue (event) -> trapped = event
+      spy = sinon.spy()
+      Bacontrap.trap(@bus, ['ctrl+num']).take(1).onValue spy
 
       event = {which: '0'.charCodeAt(0), ctrlKey: true}
       @bus.push event
-      expect(trapped).to.equal event
+      expect(spy.calledWith(event)).to.be.ok
 
     it 'handles sequences', ->
-      trapped = null
-      Bacontrap.trap(@bus, ['l', 'o', 'l']).take(1)
-        .onValue (event) -> trapped = event
+      spy = sinon.spy()
+      Bacontrap.trap(@bus, ['l', 'o', 'l']).take(1).onValue spy
 
       @bus.push {which: 'l'.charCodeAt(0)}
       @bus.push {which: 'o'.charCodeAt(0)}
       @bus.push {which: 'l'.charCodeAt(0)}
-      expect(trapped.which).to.equal 'l'.charCodeAt(0)
+      expect(spy.called).to.be.ok
 
     it 'breaks sequence when non-sequence key is pressed', ->
-      trapped = null
-      Bacontrap.trap(@bus, ['l', 'o', 'l']).take(1)
-        .onValue (event) -> trapped = event
+      spy = sinon.spy()
+      Bacontrap.trap(@bus, ['l', 'o', 'l']).take(1).onValue spy
 
       @bus.push {which: 'l'.charCodeAt(0)}
       @bus.push {which: 'o'.charCodeAt(0)}
       @bus.push {which: 'r'.charCodeAt(0)}
       @bus.push {which: 'l'.charCodeAt(0)}
-      expect(trapped).to.equal null
+      expect(spy.called).to.not.be.ok
 
-    it 'breaks sequence after idle time', (done) ->
-      trapped = null
-      Bacontrap.trap(@bus, ['l', 'o', 'l'], 1).take(1)
-        .onValue (event) -> trapped = event
+    it 'breaks sequence after idle time', ->
+      clock = sinon.useFakeTimers()
+      spy = sinon.spy()
+      Bacontrap.trap(@bus, ['l', 'o', 'l']).take(1).onValue spy
 
       @bus.push {which: 'l'.charCodeAt(0)}
       @bus.push {which: 'o'.charCodeAt(0)}
-      setTimeout =>
-        @bus.push {which: 'l'.charCodeAt(0)}
-        expect(trapped).to.equal null
-        done()
-      , 10
+      clock.tick(Bacontrap.defaults.timeout + 1)
+      @bus.push {which: 'l'.charCodeAt(0)}
+      clock.restore()
+      expect(sinon.called).to.not.be.ok
 
   describe '.bind', ->
     it 'binds to keyboard shortcuts', ->
-      trapped = null
-      Bacontrap.bind('l', 1).take(1)
-        .onValue (event) -> trapped = event
+      spy = sinon.spy()
+      Bacontrap.bind('l', 1).take(1).onValue spy
       event = $.Event('keypress', which: 'l'.charCodeAt(0))
       $(document).triggerHandler(event)
-      expect(trapped).to.equal event
+      expect(spy.calledWith(event)).to.be.ok
 
     it 'binds to array of shortcuts', ->
-      called = 0
-      Bacontrap.bind(['l', 'o']).take(2).onValue (event) -> called += 1
+      spy = sinon.spy()
+      Bacontrap.bind(['l', 'o']).take(2).onValue spy
       $(document).triggerHandler($.Event('keypress', which: 'l'.charCodeAt(0)))
       $(document).triggerHandler($.Event('keypress', which: 'o'.charCodeAt(0)))
-      expect(called).to.equal 2
+      expect(spy.callCount).to.equal 2
 
     it 'can handle shortcuts with esc', ->
-      called = false
-      Bacontrap.bind('esc a').take(1).onValue (event) -> called = true
+      spy = sinon.spy()
+      Bacontrap.bind('esc a').take(1).onValue spy
       $(document).triggerHandler($.Event('keyup', which: 27)) #esc
       $(document).triggerHandler($.Event('keypress', which: 'a'.charCodeAt(0)))
-      expect(called).to.be.ok
+      expect(spy.called).to.be.ok
 
     describe 'input fields', ->
       event = $.Event('keypress', which: 'a'.charCodeAt(0), target: document.createElement('input'))
+
       it 'ignores events from inputs by default', ->
-        called = false
-        Bacontrap.bind('a').take(1).onValue (event) -> called = true
+        spy = sinon.spy()
+        Bacontrap.bind('a').take(1).onValue spy
         $(document).triggerHandler(event)
-        expect(called).to.not.be.ok
+        expect(spy.called).to.not.be.ok
 
       it 'can set global keyboard shortcuts', ->
-        called = false
-        Bacontrap.bind('a', global: true).take(1).onValue (event) -> called = true
+        spy = sinon.spy()
+        Bacontrap.bind('a', global: true).take(1).onValue spy
         $(document).triggerHandler(event)
-        expect(called).to.be.ok
+        expect(spy.called).to.be.ok
