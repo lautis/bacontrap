@@ -1,7 +1,7 @@
 # Bacontrap
 
 [Mousetrap](https://github.com/ccampbell/mousetrap) inspired keyboard
-shortcuts implemented with Bacon.js.
+shortcuts implemented with [Bacon.js](https://github.com/raimohanska/bacon.js).
 
 Unlike Mousetrap, Bacontrap is not a standalone library: Bacon.js and
 jQuery/Zepto are dependencies. Since these provide functionality for
@@ -13,7 +13,7 @@ You can download the latest [generated javascript](https://github.com/lautis/bac
 
 Of, if you're using Bower:
 
-  $ bower install bacontrap
+    $ bower install bacontrap
 
 ## Usage
 
@@ -45,6 +45,35 @@ Bacontrap.bind('up up down down left right left right b a enter').onValue(functi
   console.log('konami code');
 });
 ```
+
+## Hacking
+
+The build process runs on [Grunt](http://gruntjs.com). You should have node
+and then install dependencies by
+
+    $ npm install
+
+After that, you can run use local grunt from `./node_modules/.bin/grunt` or
+have it installed globally with
+
+    $ npm install -g grunt-cli
+
+Before running tests, install browser-side dependencies via Bower
+
+    $ grunt bower:install
+
+Then you should be able to run tests with
+
+    $ grunt mocha
+
+Watcher is also set up so tests can be run every time source files are
+modified.
+
+    $ grunt watch
+
+There's also a Grunt task for compiling distributable JS files.
+
+    $ grunt dist
 
 ## TODO
 
