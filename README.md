@@ -9,7 +9,9 @@ Bacontrap, the library itself is even smaller than Mousetrap.
 
 ## Installation
 
-You can download the latest [generated javascript](https://github.com/lautis/bacontrap/raw/master/bacontrap.js)
+You can download the latest [generated
+javascript](https://github.com/lautis/bacontrap/raw/master/bacontrap.js). You 
+also need to have jQuery and Bacon.js included on the page.
 
 Of, if you're using Bower:
 
@@ -25,7 +27,7 @@ Bacontrap.bind('esc').onValue({ console.log('escape'); });
 // combinations
 Bacontrap.bind('command+shift+K').onValue(function() { console.log('command shift k'); });
 
-Bacontrap.bind(['command+k', 'ctrl+k']).onValue(function() {
+Bacontrap.bind(['command+k', 'ctrl+k']).onValue(function(event) {
   console.log('command k or control k');
 
   // prevent default browser behaviour
