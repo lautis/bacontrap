@@ -13,6 +13,7 @@ Bacontrap =
     keypress: $(document).asEventStream('keypress')
   defaults:
     timeout: 1500
+    global: false
   aliases:
     cmd: 'meta'
     command: 'meta'
@@ -58,6 +59,14 @@ Bacontrap.match = (match, event) ->
       stringify(event) == key)
   true
 
+Bacontrap.notInput = (event) ->
+  element = event.target || event.srcElement || {}
+  contentEditable = element.contentEditable
+  tagName = element.tagName
+
+  !(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA' ||
+    (contentEditable && contentEditable == 'true' || contentEditable == 'plaintext-only'))
+
 Bacontrap.trap = (input, shortcut, timeout = Bacontrap.defaults.timeout, pressed = []) ->
   expected = shortcut[pressed.length]
   stream = if pressed.length == 0
@@ -74,10 +83,15 @@ Bacontrap.trap = (input, shortcut, timeout = Bacontrap.defaults.timeout, pressed
 Bacontrap.parse = (shortcut) -> shortcut.toLowerCase().split(' ')
 
 Bacontrap.bind = (shortcuts, options = {}) ->
+  input = Bacon.mergeAll([Bacontrap.input.keypress, Bacontrap.input.special])
+  filteredInput = if options.global || Bacontrap.defaults.global
+    input
+  else
+     input.filter(Bacontrap.notInput)
+
   streams = for shortcut in [].concat(shortcuts)
     parsed = Bacontrap.parse(shortcut)
-    input = Bacon.mergeAll [Bacontrap.input.keypress, Bacontrap.input.special]
-    Bacontrap.trap(input, parsed, options.timeout)
+    Bacontrap.trap(filteredInput, parsed, options.timeout)
   Bacon.mergeAll(streams)
 
 if module?

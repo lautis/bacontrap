@@ -100,3 +100,17 @@ describe "Bacontrap", ->
       $(document).triggerHandler($.Event('keyup', which: 27)) #esc
       $(document).triggerHandler($.Event('keypress', which: 'a'.charCodeAt(0)))
       expect(called).to.be.ok
+
+    describe 'input fields', ->
+      event = $.Event('keypress', which: 'a'.charCodeAt(0), target: document.createElement('input'))
+      it 'ignores events from inputs by default', ->
+        called = false
+        Bacontrap.bind('a').take(1).onValue (event) -> called = true
+        $(document).triggerHandler(event)
+        expect(called).to.not.be.ok
+
+      it 'can set global keyboard shortcuts', ->
+        called = false
+        Bacontrap.bind('a', global: true).take(1).onValue (event) -> called = true
+        $(document).triggerHandler(event)
+        expect(called).to.be.ok
