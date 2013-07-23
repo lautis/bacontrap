@@ -6,7 +6,7 @@ curry2 = (fun, a) -> (b) -> fun(a, b)
 
 Bacontrap =
   input:
-    special: $(document).asEventStream('keyup')
+    special: $(document).asEventStream('keydown')
       .filter((event) ->
         key = Bacontrap.map[event.which]
         key && key not in Bacontrap.modifiers)

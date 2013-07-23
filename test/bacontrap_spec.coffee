@@ -93,7 +93,7 @@ describe "Bacontrap", ->
     it 'can handle shortcuts with esc', ->
       spy = sinon.spy()
       Bacontrap.bind('esc a').take(1).onValue spy
-      $(document).triggerHandler($.Event('keyup', which: 27)) #esc
+      $(document).triggerHandler($.Event('keydown', which: 27)) #esc
       $(document).triggerHandler($.Event('keypress', which: 'a'.charCodeAt(0)))
       expect(spy.called).to.be.ok
 
