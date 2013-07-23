@@ -16,7 +16,7 @@
 
   Bacontrap = {
     input: {
-      special: $(document).asEventStream('keyup').filter(function(event) {
+      special: $(document).asEventStream('keydown').filter(function(event) {
         var key;
         key = Bacontrap.map[event.which];
         return key && __indexOf.call(Bacontrap.modifiers, key) < 0;
@@ -24,7 +24,8 @@
       keypress: $(document).asEventStream('keypress')
     },
     defaults: {
-      timeout: 1500
+      timeout: 1500,
+      global: false
     },
     aliases: {
       cmd: 'meta',
@@ -84,6 +85,14 @@
     return true;
   };
 
+  Bacontrap.notInput = function(event) {
+    var contentEditable, element, tagName;
+    element = event.target || event.srcElement || {};
+    contentEditable = element.contentEditable;
+    tagName = element.tagName;
+    return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' || (contentEditable && contentEditable === 'true' || contentEditable === 'plaintext-only'));
+  };
+
   Bacontrap.trap = function(input, shortcut, timeout, pressed) {
     var expected, stream;
     if (timeout == null) {
@@ -108,10 +117,12 @@
   };
 
   Bacontrap.bind = function(shortcuts, options) {
-    var input, parsed, shortcut, streams;
+    var filteredInput, input, parsed, shortcut, streams;
     if (options == null) {
       options = {};
     }
+    input = Bacon.mergeAll([Bacontrap.input.keypress, Bacontrap.input.special]);
+    filteredInput = options.global || Bacontrap.defaults.global ? input : input.filter(Bacontrap.notInput);
     streams = (function() {
       var _i, _len, _ref1, _results;
       _ref1 = [].concat(shortcuts);
@@ -119,8 +130,7 @@
       for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
         shortcut = _ref1[_i];
         parsed = Bacontrap.parse(shortcut);
-        input = Bacon.mergeAll([Bacontrap.input.keypress, Bacontrap.input.special]);
-        _results.push(Bacontrap.trap(input, parsed, options.timeout));
+        _results.push(Bacontrap.trap(filteredInput, parsed, options.timeout));
       }
       return _results;
     })();
