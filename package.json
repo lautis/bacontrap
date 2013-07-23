@@ -26,7 +26,7 @@
     "coffee-script": "~1.6.3",
     "coffeeify": "0.4.1",
     "grunt": "~0.4.0",
-    "grunt-bower-task": "git://github.com/yatskevich/grunt-bower-task.git",
+    "grunt-bower-task": "git://github.com/yatskevich/grunt-bower-task.git#c37a9789874c515effbb83f2d21c9c02bf7c7177",
     "grunt-browserify": "1.2.0",
     "grunt-cli": "0.1.9",
     "grunt-contrib-coffee": "~0.7.0",
