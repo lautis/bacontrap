@@ -32,9 +32,12 @@
     "grunt-contrib-coffee": "~0.7.0",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-watch": "~0.5.1",
-    "grunt-mocha": "~0.3.4",
+    "grunt-mocha": "~0.4.0",
     "mocha": "~1.12.0",
     "phantomjs": "git://github.com/Obvious/phantomjs.git#9e5eff53fb9f68700fe1b57e52e076825bc6ec03",
     "sinon": "git://github.com/cjohansen/Sinon.JS.git#6acc4898775dbc5a3f6d88e9bc772133ba4e4e4e"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/grunt default"
   }
 }
