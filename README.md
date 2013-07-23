@@ -1,4 +1,4 @@
-# Bacontrap
+# Bacontrap [![Build Status](https://travis-ci.org/lautis/bacontrap.png?branch=master)](https://travis-ci.org/lautis/bacontrap)
 
 [Mousetrap](https://github.com/ccampbell/mousetrap) inspired keyboard
 shortcuts implemented with [Bacon.js](https://github.com/raimohanska/bacon.js).
@@ -66,7 +66,7 @@ Before running tests, install browser-side dependencies via Bower
 
 Then you should be able to run tests with
 
-    $ grunt mocha
+    $ grunt
 
 Watcher is also set up so tests can be run every time source files are
 modified.
