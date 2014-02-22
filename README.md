@@ -9,11 +9,11 @@ Bacontrap, the library itself is even smaller than Mousetrap.
 
 ## Installation
 
-You can download the latest [generated
-javascript](https://github.com/lautis/bacontrap/raw/master/bacontrap.js). You 
-also need to have jQuery and Bacon.js included on the page.
+Download the latest [generated
+javascript](https://github.com/lautis/bacontrap/raw/master/bacontrap.js) and
+include it in your app. JQuery and Bacon.js also need to be included on the page.
 
-Of, if you're using Bower:
+Or, if you're using Bower:
 
     $ bower install bacontrap
 
@@ -50,32 +50,31 @@ Bacontrap.bind('up up down down left right left right b a enter').onValue(functi
 
 ## Hacking
 
-The build process runs on [Grunt](http://gruntjs.com). You should have node
-and then install dependencies by
+The build process runs on [gulp](http://gulpjs.com). Assuming npm is installed,
+dependencies can be installed by running
 
     $ npm install
 
-After that, you can run use local grunt from `./node_modules/.bin/grunt` or
+After that, you can run use local gulp from `./node_modules/.bin/gulp` or
 have it installed globally with
 
-    $ npm install -g grunt-cli
+    $ npm install -g gulp
 
 Before running tests, install browser-side dependencies via Bower
 
-    $ grunt bower:install
+    $ gulp bower
 
 Then you should be able to run tests with
 
-    $ grunt
+    $ gulp test
 
-Watcher is also set up so tests can be run every time source files are
-modified.
+To continously run tests after file changes use
 
-    $ grunt watch
+    $ gulp
 
-There's also a Grunt task for compiling distributable JS files.
+There's also a gulp task for compiling distributable JS files.
 
-    $ grunt dist
+    $ gulp dist
 
 ## TODO
 

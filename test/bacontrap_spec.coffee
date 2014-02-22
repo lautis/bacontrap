@@ -1,7 +1,6 @@
-Bacontrap = require '../src/bacontrap.coffee'
-window.Bacontrap = Bacontrap
 {expect} = require 'chai'
 sinon = require 'sinon'
+Bacontrap = require '../src/bacontrap.coffee'
 
 describe "Bacontrap", ->
   describe '.match', ->
