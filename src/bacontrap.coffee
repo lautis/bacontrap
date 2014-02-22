@@ -48,15 +48,27 @@ Bacontrap =
     'num': (i.toString() for i in [0..9])
   modifiers: ['shift', 'alt', 'meta', 'ctrl']
 
-Bacontrap.match = (keys, event) ->
-  for key in keys
-    return false unless (if Bacontrap.groups[key]
-      Bacontrap.groups[key].indexOf(stringify(event)) >= 0
-    else if key in Bacontrap.modifiers
-      event[key + "Key"] || stringify(event) == key
-    else
-      stringify(event) == key)
+matchModifiers = (keys, event) ->
+  for modifier in Bacontrap.modifiers
+    return false if modifierPressed(modifier, event) != modifier in keys
   true
+
+modifierPressed = (modifier, event) ->
+  event[modifier + 'Key'] || stringify(event) == modifier
+
+matchKey = (key, event) ->
+  if Bacontrap.groups[key]
+    Bacontrap.groups[key].indexOf(stringify(event)) >= 0
+  else
+    stringify(event) == key
+
+matchKeys = (keys, event) ->
+  for key in keys when key not in Bacontrap.modifiers
+    return false unless matchKey(key, event)
+  true
+
+Bacontrap.match = (keys, event) ->
+  matchKeys(keys, event) && matchModifiers(keys, event)
 
 Bacontrap.notInput = (event) ->
   element = event.target || event.srcElement || {}

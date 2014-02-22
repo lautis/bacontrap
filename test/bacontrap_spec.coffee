@@ -18,6 +18,11 @@ describe "Bacontrap", ->
     it 'matches with modifier keys', ->
       event = {which: 'A'.charCodeAt(0), shiftKey: true}
       expect(Bacontrap.match(['shift', 'a'], event)).to.be.ok
+
+    it 'does not match when unexpected modifiers are present', ->
+      event = {which: 'A'.charCodeAt(0), shiftKey: true}
+      expect(Bacontrap.match(['a'], event)).to.not.be.ok
+
     it 'matches to groups', ->
       event = {which: '0'.charCodeAt(0)}
       expect(Bacontrap.match(['num'], event)).to.be.ok
