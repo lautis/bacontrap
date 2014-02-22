@@ -6,30 +6,21 @@ describe "Bacontrap", ->
   describe '.match', ->
     it 'matches to characters', ->
       keyCode = 'A'.charCodeAt(0)
-      expect(Bacontrap.match('a', which: keyCode)).to.be.ok
+      expect(Bacontrap.match(['a'], which: keyCode)).to.be.ok
 
     it 'does not match to unexpected characters', ->
       keyCode = 'B'.charCodeAt(0)
-      expect(Bacontrap.match('a', which: keyCode)).to.not.be.ok
+      expect(Bacontrap.match(['a'], which: keyCode)).to.not.be.ok
 
     it 'matches to special keys', ->
-      expect(Bacontrap.match('backspace', which: 8)).to.be.ok
+      expect(Bacontrap.match(['backspace'], which: 8)).to.be.ok
 
     it 'matches with modifier keys', ->
       event = {which: 'A'.charCodeAt(0), shiftKey: true}
-      expect(Bacontrap.match('shift+a', event)).to.be.ok
-
-    it 'supports aliases', ->
-      event = {which: 91} # meta
-      expect(Bacontrap.match('command', event)).to.be.ok
-
-    it 'supports as modifiers', ->
-      event = {which: 'A'.charCodeAt(0), metaKey: true}
-      expect(Bacontrap.match('command+a', event)).to.be.ok
-
-    it 'supports aliases with multiple matches', ->
+      expect(Bacontrap.match(['shift', 'a'], event)).to.be.ok
+    it 'matches to groups', ->
       event = {which: '0'.charCodeAt(0)}
-      expect(Bacontrap.match('num', event)).to.be.ok
+      expect(Bacontrap.match(['num'], event)).to.be.ok
 
   describe '.trap', ->
     before ->
@@ -37,7 +28,7 @@ describe "Bacontrap", ->
 
     it 'binds to keyboard shortcut', ->
       spy = sinon.spy()
-      Bacontrap.trap(@bus, ['ctrl+num']).take(1).onValue spy
+      Bacontrap.trap(@bus, [['ctrl', 'num']]).take(1).onValue spy
 
       event = {which: '0'.charCodeAt(0), ctrlKey: true}
       @bus.push event
@@ -45,7 +36,7 @@ describe "Bacontrap", ->
 
     it 'handles sequences', ->
       spy = sinon.spy()
-      Bacontrap.trap(@bus, ['l', 'o', 'l']).take(1).onValue spy
+      Bacontrap.trap(@bus, [['l'], ['o'], ['l']]).take(1).onValue spy
 
       @bus.push {which: 'l'.charCodeAt(0)}
       @bus.push {which: 'o'.charCodeAt(0)}
@@ -54,7 +45,7 @@ describe "Bacontrap", ->
 
     it 'breaks sequence when non-sequence key is pressed', ->
       spy = sinon.spy()
-      Bacontrap.trap(@bus, ['l', 'o', 'l']).take(1).onValue spy
+      Bacontrap.trap(@bus, [['l'], ['o'], ['l']]).take(1).onValue spy
 
       @bus.push {which: 'l'.charCodeAt(0)}
       @bus.push {which: 'o'.charCodeAt(0)}
@@ -65,7 +56,7 @@ describe "Bacontrap", ->
     it 'breaks sequence after idle time', ->
       clock = sinon.useFakeTimers()
       spy = sinon.spy()
-      Bacontrap.trap(@bus, ['l', 'o', 'l']).take(1).onValue spy
+      Bacontrap.trap(@bus, [['l'], ['o'], ['l']]).take(1).onValue spy
 
       @bus.push {which: 'l'.charCodeAt(0)}
       @bus.push {which: 'o'.charCodeAt(0)}
@@ -89,6 +80,19 @@ describe "Bacontrap", ->
       $(document).triggerHandler($.Event('keypress', which: 'o'.charCodeAt(0)))
       expect(spy.callCount).to.equal 2
 
+    it 'binds to aliases', ->
+      spy = sinon.spy()
+      Bacontrap.bind(['cmd+w']).take(1).onValue spy
+      $(document).triggerHandler($.Event('keypress', which: 'w'.charCodeAt(0), metaKey: true))
+      expect(spy.callCount).to.equal 1
+
+    it 'binds to groups', ->
+      spy = sinon.spy()
+      Bacontrap.bind(['num']).take(1).onValue spy
+      $(document).triggerHandler($.Event('keypress', which: '0'.charCodeAt(0)))
+      expect(spy.callCount).to.equal 1
+
+
     it 'can handle shortcuts with esc', ->
       spy = sinon.spy()
       Bacontrap.bind('esc a').take(1).onValue spy
@@ -110,3 +114,14 @@ describe "Bacontrap", ->
         Bacontrap.bind('a', global: true).take(1).onValue spy
         $(document).triggerHandler(event)
         expect(spy.called).to.be.ok
+
+  describe '.parse', ->
+    it 'splits key sequences', ->
+      expect(Bacontrap.parse("esc shift+w")).to.deep.equal([['esc'], ['shift', 'w']])
+
+    it 'resolves aliases', ->
+      expect(Bacontrap.parse("cmd command+escape"))
+        .to.deep.equal([['meta'], ['meta', 'esc']])
+
+    it 'does not resolve groups', ->
+      expect(Bacontrap.parse("num")).to.deep.equal([['num']])

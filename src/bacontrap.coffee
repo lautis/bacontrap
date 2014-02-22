@@ -48,11 +48,9 @@ Bacontrap =
     'num': (i.toString() for i in [0..9])
   modifiers: ['shift', 'alt', 'meta', 'ctrl']
 
-Bacontrap.match = (match, event) ->
-  for key in match.split('+')
-    return false unless (if Bacontrap.aliases[key]
-      Bacontrap.match(Bacontrap.aliases[key], event)
-    else if Bacontrap.groups[key]
+Bacontrap.match = (keys, event) ->
+  for key in keys
+    return false unless (if Bacontrap.groups[key]
       Bacontrap.groups[key].indexOf(stringify(event)) >= 0
     else if key in Bacontrap.modifiers
       event[key + "Key"] || stringify(event) == key
@@ -81,7 +79,10 @@ Bacontrap.trap = (input, shortcut, timeout = Bacontrap.defaults.timeout, pressed
     else
       Bacontrap.trap(input, shortcut, timeout, pressed.concat(event))
 
-Bacontrap.parse = (shortcut) -> shortcut.toLowerCase().split(' ')
+Bacontrap.parse = (shortcut) ->
+  for part in shortcut.toLowerCase().split(' ')
+    for key in part.split('+')
+      Bacontrap.aliases[key] || key
 
 Bacontrap.bind = (shortcuts, options = {}) ->
   input = Bacon.mergeAll([Bacontrap.input.keypress, Bacontrap.input.special])
