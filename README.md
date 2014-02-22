@@ -25,7 +25,7 @@ Bacontrap.bind('?').onValue(function() { console.log('show shortcuts!'); });
 Bacontrap.bind('esc').onValue({ console.log('escape'); });
 
 // combinations
-Bacontrap.bind('command+shift+K').onValue(function() { console.log('command shift k'); });
+Bacontrap.bind('command+shift+k').onValue(function() { console.log('command shift k'); });
 
 Bacontrap.bind(['command+k', 'ctrl+k']).onValue(function(event) {
   console.log('command k or control k');
@@ -41,6 +41,10 @@ Bacontrap.bind(['command+k', 'ctrl+k']).onValue(function(event) {
 // gmail style sequences
 Bacontrap.bind('g i').onValue(function() { console.log('go to inbox'); });
 Bacontrap.bind('* a').onValue(function() { console.log('select all'); });
+
+// shift+letter = LETTER
+Bacontrap.bind('G').onValue(function() { console.log('shift+g'); });
+Bacontrap.bind('shift+g').onValue(function() { console.log('also triggered'); });
 
 // konami code!
 Bacontrap.bind('up up down down left right left right b a enter').onValue(function() {

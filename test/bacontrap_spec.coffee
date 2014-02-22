@@ -5,26 +5,32 @@ Bacontrap = require '../src/bacontrap.coffee'
 describe "Bacontrap", ->
   describe '.match', ->
     it 'matches to characters', ->
-      keyCode = 'A'.charCodeAt(0)
-      expect(Bacontrap.match(['a'], which: keyCode)).to.be.ok
+      expect(Bacontrap.match(['a'], keyEvent('a'))).to.be.ok
 
     it 'does not match to unexpected characters', ->
-      keyCode = 'B'.charCodeAt(0)
-      expect(Bacontrap.match(['a'], which: keyCode)).to.not.be.ok
+      expect(Bacontrap.match(['a'], keyEvent('b'))).to.not.be.ok
 
     it 'matches to special keys', ->
-      expect(Bacontrap.match(['backspace'], which: 8)).to.be.ok
+      expect(Bacontrap.match(['backspace'], keyEvent(8))).to.be.ok
 
     it 'matches with modifier keys', ->
-      event = {which: 'A'.charCodeAt(0), shiftKey: true}
-      expect(Bacontrap.match(['shift', 'a'], event)).to.be.ok
+      event = keyEvent('a', ['alt'])
+      expect(Bacontrap.match(['alt', 'a'], event)).to.be.ok
+
+    it 'matches to uppercase characters', ->
+      expect(Bacontrap.match(['a'], keyEvent('A', ['shift']))).to.not.be.ok
+      expect(Bacontrap.match(['shift', 'a'], keyEvent('A', ['shift']))).to.be.ok
+
+    it 'matches to ? on keypress', ->
+      event = keyEvent('?', ['shift'])
+      expect(Bacontrap.match(['?'], event)).to.be.ok
 
     it 'does not match when unexpected modifiers are present', ->
-      event = {which: 'A'.charCodeAt(0), shiftKey: true}
+      event = keyEvent('a', ['alt'])
       expect(Bacontrap.match(['a'], event)).to.not.be.ok
 
     it 'matches to groups', ->
-      event = {which: '0'.charCodeAt(0)}
+      event = keyEvent('0')
       expect(Bacontrap.match(['num'], event)).to.be.ok
 
   describe '.trap', ->
@@ -128,5 +134,24 @@ describe "Bacontrap", ->
       expect(Bacontrap.parse("cmd command+escape"))
         .to.deep.equal([['meta'], ['meta', 'esc']])
 
+    it 'expands uppercase characters', ->
+      expect(Bacontrap.parse('A'))
+        .to.deep.equal([['shift', 'a']])
+
     it 'does not resolve groups', ->
       expect(Bacontrap.parse("num")).to.deep.equal([['num']])
+
+keyEvent = (key, modifiers = []) ->
+  keyCode = if typeof(key) == "string"
+    key.charCodeAt(0)
+  else
+    key
+  event =
+    type: 'keypress'
+    which: keyCode
+
+  for modifier in modifiers
+    event[modifier + 'Key'] = true
+
+  event
+
