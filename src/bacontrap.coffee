@@ -19,7 +19,7 @@ Bacontrap =
     cmd: 'meta'
     command: 'meta'
     escape: 'esc'
-    mod: /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'meta' : 'ctrl'
+    mod: if /Mac|iPod|iPhone|iPad/.test(navigator.platform) then 'meta' else 'ctrl'
     option: 'alt'
   map:
     8: 'backspace'

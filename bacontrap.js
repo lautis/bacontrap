@@ -1,5 +1,5 @@
 (function() {
-  var Bacontrap, curry2, i, stringify, _ref,
+  var Bacontrap, curry2, i, stringify,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   stringify = function(event) {
@@ -31,9 +31,7 @@
       cmd: 'meta',
       command: 'meta',
       escape: 'esc',
-      mod: (_ref = /Mac|iPod|iPhone|iPad/.test(navigator.platform)) != null ? _ref : {
-        'meta': 'ctrl'
-      },
+      mod: /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'meta' : 'ctrl',
       option: 'alt'
     },
     map: {
@@ -74,10 +72,10 @@
   };
 
   Bacontrap.match = function(match, event) {
-    var key, _i, _len, _ref1;
-    _ref1 = match.split('+');
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      key = _ref1[_i];
+    var key, _i, _len, _ref;
+    _ref = match.split('+');
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      key = _ref[_i];
       if (!(Bacontrap.aliases[key] ? Bacontrap.match(Bacontrap.aliases[key], event) : Bacontrap.groups[key] ? Bacontrap.groups[key].indexOf(stringify(event)) >= 0 : __indexOf.call(Bacontrap.modifiers, key) >= 0 ? event[key + "Key"] || stringify(event) === key : stringify(event) === key)) {
         return false;
       }
@@ -124,11 +122,11 @@
     input = Bacon.mergeAll([Bacontrap.input.keypress, Bacontrap.input.special]);
     filteredInput = options.global || Bacontrap.defaults.global ? input : input.filter(Bacontrap.notInput);
     streams = (function() {
-      var _i, _len, _ref1, _results;
-      _ref1 = [].concat(shortcuts);
+      var _i, _len, _ref, _results;
+      _ref = [].concat(shortcuts);
       _results = [];
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        shortcut = _ref1[_i];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        shortcut = _ref[_i];
         parsed = Bacontrap.parse(shortcut);
         _results.push(Bacontrap.trap(filteredInput, parsed, options.timeout));
       }
