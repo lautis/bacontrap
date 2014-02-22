@@ -4,4 +4,4 @@ node_js:
 before_script:
   - ./node_modules/.bin/gulp bower
 script:
-  - ./node_modules/.bin/gulp
+  - ./node_modules/.bin/gulp test
