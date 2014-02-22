@@ -72,11 +72,9 @@ Bacontrap.match = (keys, event) ->
 
 Bacontrap.notInput = (event) ->
   element = event.target || event.srcElement || {}
-  contentEditable = element.contentEditable
   tagName = element.tagName
 
-  !(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA' ||
-    (contentEditable && contentEditable == 'true' || contentEditable == 'plaintext-only'))
+  !(tagName in ['INPUT', 'SELECT', 'TEXTAREA'] || element.isContentEditable)
 
 Bacontrap.trap = (input, shortcut, timeout = Bacontrap.defaults.timeout, pressed = []) ->
   expected = shortcut[pressed.length]

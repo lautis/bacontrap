@@ -3,7 +3,7 @@ var shortcuts = Bacon.mergeAll([
   Bacontrap.bind("pageup").map("pageup"),
   Bacontrap.bind("pagedown").map("pagedown"),
   Bacontrap.bind("mod+k").map("mod+k"),
-  Bacontrap.bind("command+K").map("command+shift+k"),
+  Bacontrap.bind("command+shift+k").map("command+shift+k"),
   Bacontrap.bind("esc w").map("esc w")
 ])
 
@@ -17,5 +17,3 @@ $(function() {
     return Bacon.once(shortcut).merge(Bacon.later(2000, "(nothing)"))
   }).assign($("#shortcut"), "text");
 });
-
-
