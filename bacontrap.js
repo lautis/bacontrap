@@ -1,5 +1,5 @@
 (function() {
-  var Bacontrap, curry2, i, stringify,
+  var Bacontrap, curry2, i, matchKey, matchKeys, matchModifiers, modifierPressed, stringify,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   stringify = function(event) {
@@ -71,24 +71,60 @@
     modifiers: ['shift', 'alt', 'meta', 'ctrl']
   };
 
-  Bacontrap.match = function(match, event) {
-    var key, _i, _len, _ref;
-    _ref = match.split('+');
+  matchModifiers = function(modifiers, event) {
+    var modifier, _i, _len, _ref;
+    _ref = Bacontrap.modifiers;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      key = _ref[_i];
-      if (!(Bacontrap.aliases[key] ? Bacontrap.match(Bacontrap.aliases[key], event) : Bacontrap.groups[key] ? Bacontrap.groups[key].indexOf(stringify(event)) >= 0 : __indexOf.call(Bacontrap.modifiers, key) >= 0 ? event[key + "Key"] || stringify(event) === key : stringify(event) === key)) {
+      modifier = _ref[_i];
+      if (modifierPressed(modifier, event) !== (__indexOf.call(modifiers, modifier) >= 0)) {
         return false;
       }
     }
     return true;
   };
 
+  modifierPressed = function(modifier, event) {
+    var caseSensitive, key, pressed;
+    pressed = event[modifier + 'Key'] || stringify(event) === modifier;
+    if (event.type === 'keypress' && modifier === 'shift') {
+      key = stringify(event);
+      caseSensitive = key.toLowerCase() !== key.toUpperCase();
+      return caseSensitive && pressed;
+    } else {
+      return pressed;
+    }
+  };
+
+  matchKey = function(key, event) {
+    if (Bacontrap.groups[key]) {
+      return Bacontrap.groups[key].indexOf(stringify(event)) >= 0;
+    } else {
+      return stringify(event) === key;
+    }
+  };
+
+  matchKeys = function(keys, event) {
+    var key, _i, _len;
+    for (_i = 0, _len = keys.length; _i < _len; _i++) {
+      key = keys[_i];
+      if (__indexOf.call(Bacontrap.modifiers, key) < 0) {
+        if (!matchKey(key, event)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  Bacontrap.match = function(keys, event) {
+    return matchKeys(keys, event) && matchModifiers(keys, event);
+  };
+
   Bacontrap.notInput = function(event) {
-    var contentEditable, element, tagName;
+    var element, tagName;
     element = event.target || event.srcElement || {};
-    contentEditable = element.contentEditable;
     tagName = element.tagName;
-    return !(tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA' || (contentEditable && contentEditable === 'true' || contentEditable === 'plaintext-only'));
+    return !((tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA') || element.isContentEditable);
   };
 
   Bacontrap.trap = function(input, shortcut, timeout, pressed) {
@@ -111,7 +147,30 @@
   };
 
   Bacontrap.parse = function(shortcut) {
-    return shortcut.toLowerCase().split(' ');
+    var combination, expand, key, part, _i, _j, _len, _len1, _ref, _ref1, _results;
+    expand = function(key) {
+      var alias;
+      if (alias = Bacontrap.aliases[key]) {
+        return [alias];
+      } else if (key.length === 1 && key.toLowerCase() !== key) {
+        return ['shift', key.toLowerCase()];
+      } else {
+        return [key];
+      }
+    };
+    _ref = shortcut.split(' ');
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      part = _ref[_i];
+      combination = [];
+      _ref1 = part.split('+');
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        key = _ref1[_j];
+        combination.push.apply(combination, expand(key));
+      }
+      _results.push(combination);
+    }
+    return _results;
   };
 
   Bacontrap.bind = function(shortcuts, options) {
