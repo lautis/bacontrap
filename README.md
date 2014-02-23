@@ -85,3 +85,6 @@ There's also a gulp task for compiling distributable JS files.
 * Test with Internet Explorer
 * Escape as modifier key
 * Maybe support for different key events (keydown/keyup)
+* Keyboard shortcuts using cmd/ctrl are not triggered on Google Chrome, but using
+these is probably a bad idea anyway
+* Pressing modifier keys do not interrupt shortcut sequences
