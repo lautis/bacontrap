@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Bacontrap : Keyboard shortcuts with Bacon.js" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Bacontrap</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/lautis/bacontrap">View on GitHub</a>
+
+          <h1 id="project_title">Bacontrap</h1>
+          <h2 id="project_tagline">Keyboard shortcuts with Bacon.js</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/lautis/bacontrap/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/lautis/bacontrap/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><a href="https://travis-ci.org/lautis/bacontrap"><img src="https://img.shields.io/travis/lautis/bacontrap/master.svg" alt="Build Status"></a></p>
+
+<p><a href="https://github.com/ccampbell/mousetrap">Mousetrap</a> inspired keyboard
+shortcuts implemented with <a href="https://github.com/raimohanska/bacon.js">Bacon.js</a>.</p>
+
+<p>Unlike Mousetrap, Bacontrap is not a standalone library: Bacon.js and
+jQuery/Zepto are dependencies. Since these provide functionality for
+Bacontrap, the library itself is even smaller than Mousetrap.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Download the latest <a href="https://github.com/lautis/bacontrap/raw/master/bacontrap.js">generated
+javascript</a> and
+include it in your app. JQuery and Bacon.js also need to be included on the page.</p>
+
+<p>Or, if you're using Bower:</p>
+
+<pre><code>$ bower install bacontrap
+</code></pre>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<div class="highlight highlight-javascript"><pre><span class="nx">Bacontrap</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">'4'</span><span class="p">).</span><span class="nx">onValue</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'4'</span><span class="p">);</span> <span class="p">});</span>
+<span class="nx">Bacontrap</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">'?'</span><span class="p">).</span><span class="nx">onValue</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'show shortcuts!'</span><span class="p">);</span> <span class="p">});</span>
+<span class="nx">Bacontrap</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">'esc'</span><span class="p">).</span><span class="nx">onValue</span><span class="p">({</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'escape'</span><span class="p">);</span> <span class="p">});</span>
+
+<span class="c1">// combinations</span>
+<span class="nx">Bacontrap</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">'command+shift+k'</span><span class="p">).</span><span class="nx">onValue</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'command shift k'</span><span class="p">);</span> <span class="p">});</span>
+
+<span class="nx">Bacontrap</span><span class="p">.</span><span class="nx">bind</span><span class="p">([</span><span class="s1">'command+k'</span><span class="p">,</span> <span class="s1">'ctrl+k'</span><span class="p">]).</span><span class="nx">onValue</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'command k or control k'</span><span class="p">);</span>
+
+  <span class="c1">// prevent default browser behaviour</span>
+  <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+  <span class="c1">// and stop event from bubbling</span>
+  <span class="nx">event</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span>
+  <span class="c1">// return value is used by Bacon to control stream end</span>
+  <span class="k">return</span> <span class="nx">Bacon</span><span class="p">.</span><span class="nx">more</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="c1">// gmail style sequences</span>
+<span class="nx">Bacontrap</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">'g i'</span><span class="p">).</span><span class="nx">onValue</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'go to inbox'</span><span class="p">);</span> <span class="p">});</span>
+<span class="nx">Bacontrap</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">'* a'</span><span class="p">).</span><span class="nx">onValue</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'select all'</span><span class="p">);</span> <span class="p">});</span>
+
+<span class="c1">// shift+letter = LETTER</span>
+<span class="nx">Bacontrap</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">'G'</span><span class="p">).</span><span class="nx">onValue</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'shift+g'</span><span class="p">);</span> <span class="p">});</span>
+<span class="nx">Bacontrap</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">'shift+g'</span><span class="p">).</span><span class="nx">onValue</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'also triggered'</span><span class="p">);</span> <span class="p">});</span>
+
+<span class="c1">// konami code!</span>
+<span class="nx">Bacontrap</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">'up up down down left right left right b a enter'</span><span class="p">).</span><span class="nx">onValue</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'konami code'</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h2>
+<a name="hacking" class="anchor" href="#hacking"><span class="octicon octicon-link"></span></a>Hacking</h2>
+
+<p>The build process runs on <a href="http://gulpjs.com">gulp</a>. Assuming npm is installed,
+dependencies can be installed by running</p>
+
+<pre><code>$ npm install
+</code></pre>
+
+<p>After that, you can run use local gulp from <code>./node_modules/.bin/gulp</code> or
+have it installed globally with</p>
+
+<pre><code>$ npm install -g gulp
+</code></pre>
+
+<p>Before running tests, install browser-side dependencies via Bower</p>
+
+<pre><code>$ gulp bower
+</code></pre>
+
+<p>Then you should be able to run tests with</p>
+
+<pre><code>$ gulp test
+</code></pre>
+
+<p>To continously run tests after file changes use</p>
+
+<pre><code>$ gulp
+</code></pre>
+
+<p>There's also a gulp task for compiling distributable JS files.</p>
+
+<pre><code>$ gulp dist
+</code></pre>
+
+<h2>
+<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>TODO</h2>
+
+<ul>
+<li>Test with Internet Explorer</li>
+<li>Escape as modifier key</li>
+<li>Maybe support for different key events (keydown/keyup)</li>
+<li>Keyboard shortcuts using cmd/ctrl are not triggered on Google Chrome, but using
+these is probably a bad idea anyway</li>
+<li>Pressing modifier keys do not interrupt shortcut sequences</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Bacontrap maintained by <a href="https://github.com/lautis">lautis</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
