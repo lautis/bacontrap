@@ -1,3 +1,6 @@
+Bacon = require 'baconjs'
+$ = require 'jquery'
+
 stringify = (event) ->
   keyCode = event.which
   Bacontrap.map[keyCode] || String.fromCharCode(keyCode).toLowerCase()
@@ -123,7 +126,4 @@ Bacontrap.bind = (shortcuts, options = {}) ->
     Bacontrap.trap(filteredInput, parsed, options.timeout)
   Bacon.mergeAll(streams)
 
-if module?
-  module.exports = Bacontrap
-else
-  @window.Bacontrap = Bacontrap
+module.exports = Bacontrap

@@ -1,6 +1,26 @@
+
+(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define("Bacontrap", ["require","exports","module","bacon","jquery"], factory);
+  } else if (typeof exports === 'object') {
+    factory(require, exports, module);
+  } else {
+    var module = {exports: {}};
+    var dependencies = {baconjs: root.Bacon, jquery: root.jQuery};
+    var require = function(name) {
+      return dependencies[name];
+    };
+    factory(require, module.exports, module);
+    root.Bacontrap = module.exports;
+  }
+}(this, function(require, exports, module) {
 (function() {
-  var Bacontrap, curry2, i, matchKey, matchKeys, matchModifiers, modifierPressed, stringify,
+  var $, Bacon, Bacontrap, curry2, i, matchKey, matchKeys, matchModifiers, modifierPressed, stringify,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  Bacon = require('baconjs');
+
+  $ = require('jquery');
 
   stringify = function(event) {
     var keyCode;
@@ -194,10 +214,8 @@
     return Bacon.mergeAll(streams);
   };
 
-  if (typeof module !== "undefined" && module !== null) {
-    module.exports = Bacontrap;
-  } else {
-    this.window.Bacontrap = Bacontrap;
-  }
+  module.exports = Bacontrap;
 
 }).call(this);
+
+}));

@@ -1,5 +1,9 @@
 {expect} = require 'chai'
 sinon = require 'sinon'
+Bacon = require 'baconjs'
+$ = require 'jquery'
+$.fn.asEventStream = Bacon.$.asEventStream
+
 Bacontrap = require '../src/bacontrap.coffee'
 
 describe "Bacontrap", ->
