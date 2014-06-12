@@ -1,4 +1,4 @@
-# Bacontrap [![Build Status](https://img.shields.io/travis/lautis/bacontrap/master.svg)](https://travis-ci.org/lautis/bacontrap)
+# Bacontrap [![Build Status](https://travis-ci.org/lautis/bacontrap.svg?branch=master)](https://travis-ci.org/lautis/bacontrap)
 
 [Mousetrap](https://github.com/ccampbell/mousetrap) inspired keyboard
 shortcuts implemented with [Bacon.js](https://github.com/raimohanska/bacon.js).
