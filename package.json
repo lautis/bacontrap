@@ -50,7 +50,8 @@
     "vinyl-source-stream": "~0.1.1",
     "gulp-wrap-umd": "~0.2.0",
     "watchify": "~0.10.2",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "gulp-header": "~1.0.2"
   },
   "scripts": {
     "pretest": "./node_modules/.bin/bower install",

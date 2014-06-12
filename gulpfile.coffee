@@ -10,6 +10,7 @@ uglify = require 'gulp-uglify'
 wrap = require 'gulp-wrap-umd'
 fs = require 'fs'
 _ = require 'lodash'
+header = require 'gulp-header'
 
 karmaConfiguration =
   browsers: ['PhantomJS']
@@ -42,6 +43,8 @@ gulp.task 'test-browser', ['test-build'], (done) ->
   karma.start(_.assign({}, karmaConfiguration, singleRun: true, browsers: ['Chrome', 'Firefox']), done)
 
 gulp.task 'dist', ->
+  version = JSON.parse(fs.readFileSync('package.json')).version
+  copyright = "/*\n  Bacontrap v#{version}\n\n  " + fs.readFileSync('LICENSE.txt').toString().split('\n').join('\n  ').replace(/\s+$/gm, '\n') + "\n*/"
   gulp.src('src/bacontrap.coffee')
     .pipe(coffee().on('error', gutil.log))
     .pipe(wrap(
@@ -52,8 +55,10 @@ gulp.task 'dist', ->
         {name: 'jquery', globalName: 'jQuery', amdName: 'jquery'}
       ]
     ))
+    .pipe(header(copyright))
     .pipe(gulp.dest('./'))
     .pipe(uglify())
+    .pipe(header('/* Bacontrap v#{version}. Copyright 2013 Ville Lautanala. https://raw.githubusercontent.com/lautis/bacontrap/master/LICENSE.txt */'))
     .pipe(rename('bacontrap.min.js'))
     .pipe(gulp.dest('./'))
 
