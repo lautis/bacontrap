@@ -19,7 +19,7 @@
     }
   ],
   "description": "Keyboard shortcuts wrapped in Bacon",
-  "peerDependencies": {
+  "dependencies": {
     "baconjs": ">= 0.6.0",
     "jquery": ">= 1.8.0"
   },
