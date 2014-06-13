@@ -17,6 +17,10 @@ Or, if you're using Bower:
 
     $ bower install bacontrap
 
+Npm package is also available:
+
+    $ npm install bacontrap --save
+
 ## Usage
 
 ```javascript
@@ -64,17 +68,13 @@ have it installed globally with
 
     $ npm install -g gulp
 
-Before running tests, install browser-side dependencies via Bower
-
-    $ gulp bower
-
 Then you should be able to run tests with
 
     $ gulp test
 
 To continously run tests after file changes use
 
-    $ gulp
+    $ gulp watch
 
 There's also a gulp task for compiling distributable JS files.
 
