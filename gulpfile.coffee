@@ -12,6 +12,7 @@ fs = require 'fs'
 _ = require 'lodash'
 header = require 'gulp-header'
 amdclean = require 'gulp-amdclean'
+coffeeify = require 'coffeeify'
 
 karmaConfiguration =
   browsers: ['PhantomJS']
@@ -33,7 +34,7 @@ gulp.task 'watch', (done) ->
   karma.start(_.assign({}, karmaConfiguration, singleRun: false), done)
 
 gulp.task 'test-build', ->
-  browserify('./test/bacontrap_spec.coffee').bundle()
+  browserify('./test/bacontrap_spec.coffee').transform(coffeeify).bundle()
     .pipe(source('test.js'))
     .pipe(gulp.dest('./test/'))
 
