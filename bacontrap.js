@@ -1,5 +1,5 @@
 /*
-  Bacontrap v0.3.1
+  Bacontrap v0.3.2
 
   Copyright (c) 2013 Ville Lautanala
 
