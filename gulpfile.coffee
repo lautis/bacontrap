@@ -47,6 +47,7 @@ gulp.task 'dist', ->
   copyright = "/*\n  Bacontrap v#{version}\n\n  " + fs.readFileSync('LICENSE.txt').toString().split('\n').join('\n  ').replace(/\s+$/gm, '\n') + "\n*/"
   gulp.src('src/bacontrap.coffee')
     .pipe(coffee().on('error', gutil.log))
+    .pipe(gulp.dest('./lib'))
     .pipe(wrap(
       namespace: 'Bacontrap'
       template: fs.readFileSync('umd-template.jst')
