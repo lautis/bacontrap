@@ -64,7 +64,7 @@ gulp.task 'dist', ->
     .pipe(header(copyright))
     .pipe(gulp.dest('./'))
     .pipe(uglify())
-    .pipe(header('/* Bacontrap v#{version}. Copyright 2013 Ville Lautanala. https://raw.githubusercontent.com/lautis/bacontrap/master/LICENSE.txt */'))
+    .pipe(header("/* Bacontrap v#{version}. Copyright 2013 Ville Lautanala. https://raw.githubusercontent.com/lautis/bacontrap/master/LICENSE.txt */"))
     .pipe(rename('bacontrap.min.js'))
     .pipe(gulp.dest('./'))
 
