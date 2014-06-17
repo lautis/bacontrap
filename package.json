@@ -29,7 +29,6 @@
     ]
   },
   "scripts": {
-    "prepublish": "./node_modules/.bin/gulp dist",
     "test": "./node_modules/.bin/gulp test"
   },
   "main": "./bacontrap.js",
