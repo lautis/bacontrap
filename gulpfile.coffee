@@ -11,6 +11,7 @@ wrap = require 'gulp-wrap-umd'
 fs = require 'fs'
 _ = require 'lodash'
 header = require 'gulp-header'
+amdclean = require 'gulp-amdclean'
 
 karmaConfiguration =
   browsers: ['PhantomJS']
@@ -46,11 +47,16 @@ gulp.task 'dist', ->
   version = JSON.parse(fs.readFileSync('package.json')).version
   copyright = "/*\n  Bacontrap v#{version}\n\n  " + fs.readFileSync('LICENSE.txt').toString().split('\n').join('\n  ').replace(/\s+$/gm, '\n') + "\n*/"
   gulp.src('src/bacontrap.coffee')
-    .pipe(coffee().on('error', gutil.log))
+    .pipe(coffee(bare: true).on('error', gutil.log))
     .pipe(gulp.dest('./lib'))
+    .pipe(amdclean(
+      prefixMode: 'standard'
+      wrap:
+        start: '(function() {\n'
+        end: '\nreturn module.exports;\n}());'
+    ))
     .pipe(wrap(
       namespace: 'Bacontrap'
-      template: fs.readFileSync('umd-template.jst')
       deps: [
         {name: 'baconjs', globalName: 'Bacon', amdName: 'bacon'},
         {name: 'jquery', globalName: 'jQuery', amdName: 'jquery'}
