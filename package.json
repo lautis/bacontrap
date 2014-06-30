@@ -25,7 +25,7 @@
   "main": "./bacontrap.js",
   "dependencies": {
     "baconjs": ">= 0.6.0",
-    "jquery": ">= 1.8.0",
+    "jquery": ">= 1.8.0"
   },
   "devDependencies": {
     "browserify": "~4.2.0",
