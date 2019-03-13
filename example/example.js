@@ -1,3 +1,5 @@
+var Bacontrap = require("../bacontrap");
+var Bacon = require("baconjs");
 var shortcuts = Bacon.mergeAll([
   Bacontrap.bind("?").map("?"),
   Bacontrap.bind("pageup").map("pageup"),
@@ -12,8 +14,11 @@ Bacontrap.bind("esc").onValue(function(e) {
   return Bacon.more;
 })
 
-$(function() {
+document.addEventListener("DOMContentLoaded", function() {
   shortcuts.flatMapLatest(function(shortcut) {
     return Bacon.once(shortcut).merge(Bacon.later(2000, "(nothing)"))
-  }).assign($("#shortcut"), "text");
-});
+  }).onValue(function(text) {
+    document.querySelector("#shortcut").textContent = text
+    return Bacon.more
+  })
+})
