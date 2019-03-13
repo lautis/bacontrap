@@ -7,11 +7,9 @@ watchify = require 'watchify'
 karma = require('karma').server
 rename = require 'gulp-rename'
 uglify = require 'gulp-uglify'
-wrap = require 'gulp-wrap-umd'
 fs = require 'fs'
 _ = require 'lodash'
 header = require 'gulp-header'
-amdclean = require 'gulp-amdclean'
 coffeeify = require 'coffeeify'
 
 karmaConfiguration =
