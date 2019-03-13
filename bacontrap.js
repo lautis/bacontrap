@@ -31,8 +31,8 @@ Bacon = require('baconjs');
 
 stringify = function(event) {
   var keyCode;
-  keyCode = event.which;
-  return Bacontrap.map[keyCode] || String.fromCharCode(keyCode).toLowerCase();
+  keyCode = event.keyCode;
+  return Bacontrap.map[keyCode] || event.key || String.fromCharCode(keyCode).toLowerCase();
 };
 
 curry2 = function(fun, a) {
@@ -42,14 +42,7 @@ curry2 = function(fun, a) {
 };
 
 Bacontrap = {
-  input: {
-    special: Bacon.fromEventTarget(document, 'keydown').filter(function(event) {
-      var key;
-      key = Bacontrap.map[event.which];
-      return key && __indexOf.call(Bacontrap.modifiers, key) < 0;
-    }),
-    keypress: Bacon.fromEventTarget(document, 'keypress')
-  },
+  input: Bacon.fromEventTarget(document, 'keydown'),
   defaults: {
     timeout: 1500,
     global: false
@@ -113,7 +106,7 @@ matchModifiers = function(modifiers, event) {
 modifierPressed = function(modifier, event) {
   var caseSensitive, key, pressed;
   pressed = event[modifier + 'Key'] || stringify(event) === modifier;
-  if (event.type === 'keypress' && modifier === 'shift') {
+  if (event.type === 'keydown' && modifier === 'shift') {
     key = stringify(event);
     caseSensitive = key.toLowerCase() !== key.toUpperCase();
     return caseSensitive && pressed;
@@ -201,12 +194,11 @@ Bacontrap.parse = function(shortcut) {
 };
 
 Bacontrap.bind = function(shortcuts, options) {
-  var filteredInput, input, parsed, shortcut, streams;
+  var filteredInput, parsed, shortcut, streams;
   if (options == null) {
     options = {};
   }
-  input = Bacon.mergeAll([Bacontrap.input.keypress, Bacontrap.input.special]);
-  filteredInput = options.global || Bacontrap.defaults.global ? input : input.filter(Bacontrap.notInput);
+  filteredInput = options.global || Bacontrap.defaults.global ? Bacontrap.input : Bacontrap.input.filter(Bacontrap.notInput);
   streams = (function() {
     var _i, _len, _ref, _results;
     _ref = [].concat(shortcuts);
