@@ -9,21 +9,14 @@ Bacontrap, the library itself is even smaller than Mousetrap.
 
 ## Installation
 
-Download the latest [generated
-javascript](https://github.com/lautis/bacontrap/raw/master/bacontrap.js) and
-include it in your app. JQuery and Bacon.js also need to be included on the page.
-
-Or, if you're using Bower:
-
-    $ bower install bacontrap
-
-Npm package is also available:
+Via NPM:
 
     $ npm install bacontrap --save
 
 ## Usage
 
 ```javascript
+const Bacontrap = require('Bacontrap');
 Bacontrap.bind('4').onValue(function() { console.log('4'); });
 Bacontrap.bind('?').onValue(function() { console.log('show shortcuts!'); });
 Bacontrap.bind('esc').onValue({ console.log('escape'); });

@@ -48,20 +48,7 @@ gulp.task 'dist', ->
   version = JSON.parse(fs.readFileSync('package.json')).version
   copyright = "/*\n  Bacontrap v#{version}\n\n  " + fs.readFileSync('LICENSE.txt').toString().split('\n').join('\n  ').replace(/\s+$/gm, '\n') + "\n*/"
   gulp.src('src/bacontrap.coffee')
-    .pipe(coffee(bare: true).on('error', gutil.log))
-    .pipe(amdclean(
-      prefixMode: 'standard'
-      wrap:
-        start: '(function() {\n'
-        end: '\nreturn module.exports;\n}());'
-    ))
-    .pipe(wrap(
-      namespace: 'Bacontrap'
-      deps: [
-        {name: 'baconjs', globalName: 'Bacon', amdName: 'bacon'},
-        {name: 'jquery', globalName: 'jQuery', amdName: 'jquery'}
-      ]
-    ))
+    .pipe(coffee(bare: true))
     .pipe(header(copyright))
     .pipe(gulp.dest('./'))
     .pipe(uglify())
