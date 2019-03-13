@@ -1,10 +1,20 @@
 {expect} = require 'chai'
 sinon = require 'sinon'
 Bacon = require 'baconjs'
-$ = require 'jquery'
-$.fn.asEventStream = Bacon.$.asEventStream
 
 Bacontrap = require '../src/bacontrap.coffee'
+
+keyEvent = (key, modifiers = []) ->
+  keyCode = if typeof(key) == "string"
+    key.charCodeAt(0)
+  else
+    key
+
+  event = new CustomEvent('keypress')
+  for modifier in modifiers
+    event[modifier + 'Key'] = true
+  event.which = keyCode
+  event
 
 describe "Bacontrap", ->
   describe '.match', ->
@@ -84,50 +94,52 @@ describe "Bacontrap", ->
     it 'binds to keyboard shortcuts', ->
       spy = sinon.spy()
       Bacontrap.bind('l', 1).take(1).onValue spy
-      event = $.Event('keypress', which: 'l'.charCodeAt(0))
-      $(document).triggerHandler(event)
+      event = keyEvent('l')
+      document.dispatchEvent(event)
       expect(spy.calledWith(event)).to.be.ok
 
     it 'binds to array of shortcuts', ->
       spy = sinon.spy()
       Bacontrap.bind(['l', 'o']).take(2).onValue spy
-      $(document).triggerHandler($.Event('keypress', which: 'l'.charCodeAt(0)))
-      $(document).triggerHandler($.Event('keypress', which: 'o'.charCodeAt(0)))
+      document.dispatchEvent(keyEvent('l'))
+      document.dispatchEvent(keyEvent('o'))
       expect(spy.callCount).to.equal 2
 
     it 'binds to aliases', ->
       spy = sinon.spy()
       Bacontrap.bind(['cmd+w']).take(1).onValue spy
-      $(document).triggerHandler($.Event('keypress', which: 'w'.charCodeAt(0), metaKey: true))
+      console.log(keyEvent('w', ['meta']))
+      document.dispatchEvent(keyEvent('w', ['meta']))
       expect(spy.callCount).to.equal 1
 
     it 'binds to groups', ->
       spy = sinon.spy()
       Bacontrap.bind(['num']).take(1).onValue spy
-      $(document).triggerHandler($.Event('keypress', which: '0'.charCodeAt(0)))
+      document.dispatchEvent(keyEvent('0'))
       expect(spy.callCount).to.equal 1
 
 
     it 'can handle shortcuts with esc', ->
       spy = sinon.spy()
       Bacontrap.bind('esc a').take(1).onValue spy
-      $(document).triggerHandler($.Event('keydown', which: 27)) #esc
-      $(document).triggerHandler($.Event('keypress', which: 'a'.charCodeAt(0)))
+      document.dispatchEvent(keyEvent(27)) #esc
+      document.dispatchEvent(keyEvent('a'))
       expect(spy.called).to.be.ok
 
     describe 'input fields', ->
-      event = $.Event('keypress', which: 'a'.charCodeAt(0), target: document.createElement('input'))
+      event = keyEvent('a')
+      target = document.createElement('input')
 
-      it 'ignores events from inputs by default', ->
+      it.only 'ignores events from inputs by default', ->
         spy = sinon.spy()
         Bacontrap.bind('a').take(1).onValue spy
-        $(document).triggerHandler(event)
+        target.dispatchEvent(event)
         expect(spy.called).to.not.be.ok
 
       it 'can set global keyboard shortcuts', ->
         spy = sinon.spy()
         Bacontrap.bind('a', global: true).take(1).onValue spy
-        $(document).triggerHandler(event)
+        target.dispatchEvent(event)
         expect(spy.called).to.be.ok
 
   describe '.parse', ->
@@ -144,18 +156,3 @@ describe "Bacontrap", ->
 
     it 'does not resolve groups', ->
       expect(Bacontrap.parse("num")).to.deep.equal([['num']])
-
-keyEvent = (key, modifiers = []) ->
-  keyCode = if typeof(key) == "string"
-    key.charCodeAt(0)
-  else
-    key
-  event =
-    type: 'keypress'
-    which: keyCode
-
-  for modifier in modifiers
-    event[modifier + 'Key'] = true
-
-  event
-

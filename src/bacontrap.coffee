@@ -1,5 +1,4 @@
 Bacon = require 'baconjs'
-$ = require 'jquery'
 
 stringify = (event) ->
   keyCode = event.which
@@ -10,11 +9,11 @@ curry2 = (fun, a) -> (b) -> fun(a, b)
 Bacontrap =
   input:
     special:
-      $(document).asEventStream('keydown')
+      Bacon.fromEventTarget(document, 'keydown')
         .filter((event) ->
           key = Bacontrap.map[event.which]
           key && key not in Bacontrap.modifiers)
-    keypress: $(document).asEventStream('keypress')
+    keypress: Bacon.fromEventTarget(document, 'keypress')
   defaults:
     timeout: 1500
     global: false
