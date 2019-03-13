@@ -1,19 +1,13 @@
 Bacon = require 'baconjs'
 
 stringify = (event) ->
-  keyCode = event.which
-  Bacontrap.map[keyCode] || String.fromCharCode(keyCode).toLowerCase()
+  keyCode = event.keyCode
+  Bacontrap.map[keyCode] || event.key || String.fromCharCode(keyCode).toLowerCase()
 
 curry2 = (fun, a) -> (b) -> fun(a, b)
 
 Bacontrap =
-  input:
-    special:
-      Bacon.fromEventTarget(document, 'keydown')
-        .filter((event) ->
-          key = Bacontrap.map[event.which]
-          key && key not in Bacontrap.modifiers)
-    keypress: Bacon.fromEventTarget(document, 'keypress')
+  input: Bacon.fromEventTarget(document, 'keydown')
   defaults:
     timeout: 1500
     global: false
@@ -58,7 +52,7 @@ matchModifiers = (modifiers, event) ->
 modifierPressed = (modifier, event) ->
   pressed = event[modifier + 'Key'] || stringify(event) == modifier
 
-  if event.type == 'keypress' && modifier == 'shift'
+  if modifier == 'shift'
     key = stringify(event)
     caseSensitive = key.toLowerCase() != key.toUpperCase()
     caseSensitive && pressed
@@ -114,11 +108,10 @@ Bacontrap.parse = (shortcut) ->
     combination
 
 Bacontrap.bind = (shortcuts, options = {}) ->
-  input = Bacon.mergeAll([Bacontrap.input.keypress, Bacontrap.input.special])
   filteredInput = if options.global || Bacontrap.defaults.global
-    input
+    Bacontrap.input
   else
-     input.filter(Bacontrap.notInput)
+    Bacontrap.input.filter(Bacontrap.notInput)
 
   streams = for shortcut in [].concat(shortcuts)
     parsed = Bacontrap.parse(shortcut)

@@ -10,10 +10,10 @@ keyEvent = (key, modifiers = []) ->
   else
     key
 
-  event = new CustomEvent('keypress')
+  event = new CustomEvent('keydown', bubbles: true)
   for modifier in modifiers
     event[modifier + 'Key'] = true
-  event.which = keyCode
+  event.keyCode = keyCode
   event
 
 describe "Bacontrap", ->
@@ -35,7 +35,7 @@ describe "Bacontrap", ->
       expect(Bacontrap.match(['a'], keyEvent('A', ['shift']))).to.not.be.ok
       expect(Bacontrap.match(['shift', 'a'], keyEvent('A', ['shift']))).to.be.ok
 
-    it 'matches to ? on keypress', ->
+    it 'matches to ? on keydown', ->
       event = keyEvent('?', ['shift'])
       expect(Bacontrap.match(['?'], event)).to.be.ok
 
@@ -55,7 +55,7 @@ describe "Bacontrap", ->
       spy = sinon.spy()
       Bacontrap.trap(@bus, [['ctrl', 'num']]).take(1).onValue spy
 
-      event = {which: '0'.charCodeAt(0), ctrlKey: true}
+      event = keyEvent('0', ['ctrl'])
       @bus.push event
       expect(spy.calledWith(event)).to.be.ok
 
@@ -63,19 +63,19 @@ describe "Bacontrap", ->
       spy = sinon.spy()
       Bacontrap.trap(@bus, [['l'], ['o'], ['l']]).take(1).onValue spy
 
-      @bus.push {which: 'l'.charCodeAt(0)}
-      @bus.push {which: 'o'.charCodeAt(0)}
-      @bus.push {which: 'l'.charCodeAt(0)}
+      @bus.push keyEvent('l')
+      @bus.push keyEvent('o')
+      @bus.push keyEvent('l')
       expect(spy.called).to.be.ok
 
     it 'breaks sequence when non-sequence key is pressed', ->
       spy = sinon.spy()
       Bacontrap.trap(@bus, [['l'], ['o'], ['l']]).take(1).onValue spy
 
-      @bus.push {which: 'l'.charCodeAt(0)}
-      @bus.push {which: 'o'.charCodeAt(0)}
-      @bus.push {which: 'r'.charCodeAt(0)}
-      @bus.push {which: 'l'.charCodeAt(0)}
+      @bus.push keyEvent('l')
+      @bus.push keyEvent('o')
+      @bus.push keyEvent('r')
+      @bus.push keyEvent('l')
       expect(spy.called).to.not.be.ok
 
     it 'breaks sequence after idle time', ->
@@ -83,10 +83,10 @@ describe "Bacontrap", ->
       spy = sinon.spy()
       Bacontrap.trap(@bus, [['l'], ['o'], ['l']]).take(1).onValue spy
 
-      @bus.push {which: 'l'.charCodeAt(0)}
-      @bus.push {which: 'o'.charCodeAt(0)}
+      @bus.push keyEvent('l')
+      @bus.push keyEvent('o')
       clock.tick(Bacontrap.defaults.timeout + 1)
-      @bus.push {which: 'l'.charCodeAt(0)}
+      @bus.push keyEvent('l')
       clock.restore()
       expect(sinon.called).to.not.be.ok
 
@@ -108,7 +108,6 @@ describe "Bacontrap", ->
     it 'binds to aliases', ->
       spy = sinon.spy()
       Bacontrap.bind(['cmd+w']).take(1).onValue spy
-      console.log(keyEvent('w', ['meta']))
       document.dispatchEvent(keyEvent('w', ['meta']))
       expect(spy.callCount).to.equal 1
 
@@ -127,19 +126,22 @@ describe "Bacontrap", ->
       expect(spy.called).to.be.ok
 
     describe 'input fields', ->
-      event = keyEvent('a')
-      target = document.createElement('input')
-
-      it.only 'ignores events from inputs by default', ->
+      it 'ignores events from inputs by default', ->
         spy = sinon.spy()
         Bacontrap.bind('a').take(1).onValue spy
-        target.dispatchEvent(event)
+        target = document.createElement('input')
+        document.body.appendChild(target)
+        target.dispatchEvent(keyEvent('a'))
         expect(spy.called).to.not.be.ok
+        document.dispatchEvent(keyEvent('a'))
+        expect(spy.called).to.be.ok
 
       it 'can set global keyboard shortcuts', ->
         spy = sinon.spy()
         Bacontrap.bind('a', global: true).take(1).onValue spy
-        target.dispatchEvent(event)
+        target = document.createElement('input')
+        document.body.appendChild(target)
+        target.dispatchEvent(keyEvent('a'))
         expect(spy.called).to.be.ok
 
   describe '.parse', ->
